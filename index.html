@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Vibe Clock</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1c1c2b"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #1c1c2b, #2c2c3e);
+      color: #bffcff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .sponsor {
+      font-size: 14px;
+      color: #ffffffb2;
+    }
+
+    .clock {
+      font-size: 60px;
+      margin-top: 40px;
+      text-shadow: 0 0 10px #00fff2;
+    }
+
+    #installBtn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #00c2ff;
+      border: none;
+      color: white;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google Logo">
+    <div class="sponsor">Sponsored by Google</div>
+  </div>
+
+  <div class="clock" id="clock">00:00:00</div>
+
+  <button id="installBtn">Install App</button>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      document.getElementById('clock').textContent = time;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // PWA Install Prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', () => {
+      installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
